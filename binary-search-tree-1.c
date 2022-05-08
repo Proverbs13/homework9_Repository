@@ -64,9 +64,9 @@ int main()
 			scanf("%d", &key);
 			//반복방식으로 노드를 찾아 찾은노드주소를 ptr에 반환
 			ptr = searchIterative(head, key); 
-			if(ptr != NULL)
-				printf("\n node [%d] found at %p\n", ptr->key, ptr);
-			else
+			if(ptr != NULL) //받아온 ptr이 있으면 정보출력
+				printf("\n node [%d] found at %p\n", ptr->key, ptr); 
+			else //받아온 ptr이 NULL 이면 //안내메세지 출력
 				printf("\n Cannot find the node [%d]\n", key);
 			break;
 		case 's': case 'S':
@@ -159,7 +159,7 @@ int insert(Node* head, int key){
 	
 	while (ptr1!=NULL) { // 탐색하던 ptr이 NULL일 때까지 반복
 		//트리 내에 이미입력한 key노드가 있는경우
-		if(ptr1->key==key){
+		if(ptr1->key == key){
 			printf("\nThe key you entered is already in the tree.");
 			return 0; //바로 함수를 종료함
 		}
@@ -170,7 +170,6 @@ int insert(Node* head, int key){
 			ptr1= ptr1->left; //ptr1 왼쪽자식노드로 이동
 		else //작을 때 (같을 때는 이미 윗 조건에서 걸러짐)
 			ptr1= ptr1->right;
-			printf("!!!!");
 	} 
 	//반복문 종료되면서 ptr1=NULL이 되고 
 	//ptr2는 추가되는 노드의 부모노드 위치에 있음
@@ -181,20 +180,46 @@ int insert(Node* head, int key){
 		ptr2->right = Nnode; // 새노드는 오른쪽 자식노드로 
 }
 
-
 //리프노드 삭제
 int deleteLeafNode(Node* head, int key){
+	
 
 }
 
 //재귀방식 노드 탐색
 Node* searchRecursive(Node* ptr, int key){
+	//재귀 호출하며 이동한 ptr값이 결국 NULL이면(일치하는 key가 없으면) NULL 반환
+	if(ptr==NULL)
+		return NULL;
+	//노드들의 key와 입력된 key 대소 비교하며 이동시킨ptr호출
+	if(ptr->key > key) //현재 위치 노드의 key가 입력한 key보다 클 때
+		ptr = searchRecursive(ptr->left, key); 
+		//ptr에 왼쪽 자식노드로 이동&호출 후 얻은 반환값 넣어줌 
+	else if(ptr->key > key) // 작을 때
+		ptr = searchRecursive(ptr->right, key);
+		//ptr에 오른쪽 자식노드로 이동&호출 후 얻은 반환값 넣어줌
 
+	//만약 현재노드의 key가 입력한 key 와 같으면 함수호출없이 그대로 노드주소 반환
+	//여러번 호출하며 값이 일치하면 일치한 그 노드의 주소 즉 ptr 값 반환 
+	return ptr; // 찾은 ptr 반환
 }
 
 //반복방식 노드 탐색
 Node* searchIterative(Node* head, int key){
+	Node* ptr = head->left; //반복하며 탐색할 포인터 ptr
 
+	while( ptr != NULL ){ //ptr이 이동하며 NULL 일때 까지(찾지 못할 때까지) 반복
+		//찾은 노드 key가 입력한 key 일 때
+		if(ptr->key == key) 
+			return ptr; // 찾은노드 주소 반환
+		//찾은 노드 key가 입력한 key 보다 클 때
+		else if(ptr->key > key)
+			ptr= ptr->left;//ptr은 왼쪽자식노드로 이동
+		else // 작을 때
+			ptr= ptr->right;//ptr은 오른쪽자식노드로 이동
+	}
+	//찾지 못하면 아래 문장 실행되며 NULL이 된 ptr 반환
+	return ptr;
 }
 
 //트리 노드들의 동적 메모리 해제
