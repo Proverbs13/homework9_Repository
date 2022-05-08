@@ -195,7 +195,7 @@ Node* searchRecursive(Node* ptr, int key){
 	if(ptr->key > key) //현재 위치 노드의 key가 입력한 key보다 클 때
 		ptr = searchRecursive(ptr->left, key); 
 		//ptr에 왼쪽 자식노드로 이동&호출 후 얻은 반환값 넣어줌 
-	else if(ptr->key > key) // 작을 때
+	else if(ptr->key < key) // 작을 때
 		ptr = searchRecursive(ptr->right, key);
 		//ptr에 오른쪽 자식노드로 이동&호출 후 얻은 반환값 넣어줌
 
