@@ -117,18 +117,16 @@ void inorderTraversal(Node* ptr) {
 		printf("[%d]  ", ptr->key);   // 현재 노드 key 출력
 		inorderTraversal(ptr->right); // 오른쪽자식노드로 이동한 주소로 함수 호출
 	}
-
 }
 
 //재귀방식 전위 순회 = 부모먼저 출력->왼쪽자식->오른쪽자식
 void preorderTraversal(Node* ptr) {	
 	//이동한 ptr이 NULL이 아니면 실행
 	if(ptr!=NULL) {
-		printf(" [%d] ", ptr->key); //이동한 현재 노드(부모) 우선 출력후
+		printf("[%d]  ", ptr->key); //이동한 현재 노드(부모) 우선 출력후
 		preorderTraversal(ptr->left); //왼쪽,오른쪽 자식 주소로 함수 호출
 		preorderTraversal(ptr->right);
 	}
-
 }
 
 //재귀방식 후위 순회 = 자식노드 먼저출력(왼,오 순서) -> 부모
@@ -137,7 +135,7 @@ void postorderTraversal(Node* ptr) {
 	if(ptr!=NULL) {
 		postorderTraversal(ptr->left);  //우선 왼쪽,오른쪽 자식 노드주소로 함수 호출 
 		postorderTraversal(ptr->right);
-		printf(" [%d] ", ptr->key);     //이후 부모 노드 출력
+		printf("[%d]  ", ptr->key);     //이후 부모 노드 출력
 	}
 }
 
@@ -166,10 +164,10 @@ int insert(Node* head, int key){
 		//ptr1이 탐색하기위해 이동하기 전 부모노드 위치 저장
 		ptr2 = ptr1;
 		//입력된 key 와 원래 노드의 키값과의 비교
-		if(ptr1->key > key) // 트리내 ptr1의 현재위치의 노드key가 입력된 key보다 클 때
-			ptr1= ptr1->left; //ptr1 왼쪽자식노드로 이동
+		if(ptr1->key > key) // 현재위치의 노드key가 입력된 key보다 클 때
+			ptr1= ptr1->left; // 왼쪽 자식노드로 이동
 		else //작을 때 (같을 때는 이미 윗 조건에서 걸러짐)
-			ptr1= ptr1->right;
+			ptr1= ptr1->right;// 오른쪽 자식노드로 이동
 	} 
 	//반복문 종료되면서 ptr1=NULL이 되고 
 	//ptr2는 추가되는 노드의 부모노드 위치에 있음
@@ -178,13 +176,59 @@ int insert(Node* head, int key){
 		ptr2->left = Nnode; // 새노드는 왼쪽 자식노드로
 	else //크다면
 		ptr2->right = Nnode; // 새노드는 오른쪽 자식노드로 
+	return 0; //함수종료
 }
 
-//리프노드 삭제
+//리프노드 삭제 - 자식이 없는 리프노드 삭제이므로 리프노드까지 이동한 후 삭제한다
 int deleteLeafNode(Node* head, int key){
-	
+	//트리에 내용이 없을 때(루트노드 안만들어짐)
+	if (head->left == NULL) {
+		printf("\n Tree is empty!!\n");
+		return 0; // 함수종료
+	}
+	Node* ptr1 = head->left;  //탐색용 트리구조체 포인터 ptr1
+	Node* ptr2 = head; //탐색하는 ptr1노드의 부모노드 위치를 저장해 놓을 포인터 ptr2
+	// 루트노드 삭제시를 대비해 ptr에 head를 넣어줌	
 
+	//일단 입력한 key값과 같고, 왼/오른쪽 자식모두 없는 리프노드만 삭제
+	while (ptr1 != NULL) { //ptr1이 이동하며 NULL이 될 때 까지 반복
+
+		//현재위치 노드 key가 입력한 key랑 같고
+		if (ptr1->key == key) {
+			//리프노드일때 
+			if (ptr1->left == NULL && ptr1->right == NULL) {
+				//루트노드가 리프노드일때
+				if (ptr2 == head){
+					head->left = NULL; //루트노드 가리키던 head는 NULL 가리킴
+					free(ptr1); //현재위치인 루트노드 동적메모리 해제
+					return 0;   //함수종료
+				}
+				//일반적인 리프노드 삭제
+				//ptr1을 찾아도 부모 ptr2는 어느쪽 자식노드를 삭제할지 아직 모름
+				if (ptr2->left == ptr1) //ptr1이 왼쪽자식노드일 때
+					ptr2->left = NULL;  //ptr2의 찾은 자식노드 연결 해제
+				else //ptr1이 오른쪽자식노드일 때
+					ptr2->right = NULL; //ptr2의 찾은 자식노드 연결 해제
+				free(ptr1); //삭제할 노드 동적메모리 해제
+				return 0;   //함수종료
+			}
+			else { // 노드안에 일치하는 값은 있지만 리프노드가 아님
+				printf("Your key is not a leafnode\n"); //안내문 출력
+				return 0; //함수종료
+			}
+		}
+		ptr2 = ptr1; //ptr1이 이동하기 전 부모노드 위치 저장
+		// ptr1 이동
+		if (ptr1->key > key) // 현재위치의 노드key가 입력된 key보다 클 때
+			ptr1 = ptr1->left; // 왼쪽 자식노드로 이동
+		else //작을 때 (같을 때는 이미 윗 조건에서 걸러짐)
+			ptr1 = ptr1->right; // 오른쪽 자식노드로 이동
+	}
+	//ptr1이 NULL이 되고 트리 내에 입력한 key를 가진 리프노드가 없기 때문에
+	printf("Your key is not in the Tree\n"); //안내문 출력
+	return 0; //함수 종료
 }
+
 
 //재귀방식 노드 탐색
 Node* searchRecursive(Node* ptr, int key){
@@ -234,7 +278,6 @@ int freeBST(Node* head){
 	FNode(dt);  //루트노드의 주소를 보내줘 재귀적으로 동적메모리 해제
 	free(head); // 처음의 헤드노드 동적 메모리 해제
 	return 1;   //함수 종료
-
 }
 
 //재귀형식으로 동적 메모리 해제를 위한 함수
@@ -249,6 +292,3 @@ int FNode(Node* p){
 	// 모든 자식들을 동적메모리 해제시킬 수 있기 때문에 후위 순회 방식으로 해제함
 	return 0; //함수종료
 }
-
-
-
